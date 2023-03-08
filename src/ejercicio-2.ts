@@ -1,4 +1,4 @@
-class List<T> {
+export class List<T> {
   private elements: T[];
 
   constructor(elements?: T[]) {
