@@ -9,7 +9,7 @@ interface ICancion {
 interface ISingle extends ICancion {
   versiones?: ICancion[];
 }
-class Disco<T extends ICancion> implements IDisco<T> {
+export class Disco<T extends ICancion> implements IDisco<T> {
     constructor(
       public nombre: string,
       public añoPublicacion: number,
@@ -20,7 +20,7 @@ class Disco<T extends ICancion> implements IDisco<T> {
     }
   }
 
-abstract class DiscoSingle<T extends ICancion | ISingle> extends Disco<T> {
+export abstract class DiscoSingle<T extends ICancion | ISingle> extends Disco<T> {
   declare singles?: ISingle[];
   constructor(
     nombre: string,
@@ -40,7 +40,7 @@ interface IDisco<T extends ICancion | ISingle> {
   singles?: ISingle[];
 }
 
-abstract class Artista<T extends ICancion | ISingle> implements IArtista<T> {
+export abstract class Artista<T extends ICancion | ISingle> implements IArtista<T> {
   constructor(
     public nombre: string,
     public oyentesMensuales: number,
@@ -51,7 +51,7 @@ abstract class Artista<T extends ICancion | ISingle> implements IArtista<T> {
   abstract reproduccionesDisco(discoNombre: string): number;
 }
 
-class ArtistaImpl<T extends ICancion | ISingle> extends Artista<T> {
+export class ArtistaImpl<T extends ICancion | ISingle> extends Artista<T> {
   numCancionesEnDisco(discoNombre: string): number {
     const disco = this.discografia.find((d) => d.nombre === discoNombre);
     if (disco) {
@@ -132,7 +132,7 @@ interface ISingle {
   versiones?: ICancion[];
 }
 
-class Single implements ISingle {
+export class Single implements ISingle {
   constructor(
     public nombre: string,
     public duracion: number,
