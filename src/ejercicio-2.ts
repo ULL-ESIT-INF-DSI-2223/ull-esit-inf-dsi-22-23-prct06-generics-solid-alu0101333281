@@ -39,7 +39,10 @@ export class List<T> {
     return mapped;
   }
 
-  public reduce<U>(reducer: (accumulator: U, current: T) => U, initialAccumulator: U): U {
+  public reduce<U>(
+    reducer: (accumulator: U, current: T) => U,
+    initialAccumulator: U
+  ): U {
     let accumulator = initialAccumulator;
     for (const element of this.elements) {
       accumulator = reducer(accumulator, element);

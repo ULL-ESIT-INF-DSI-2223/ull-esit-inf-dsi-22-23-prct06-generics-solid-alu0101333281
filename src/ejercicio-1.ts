@@ -38,14 +38,22 @@ export abstract class BasicStreamableCollection<T> implements Streamable<T> {
 }
 
 export class Series {
-  constructor(public name: string, public year: number, public genre: string,public seasons: number) {}
+  constructor(
+    public name: string,
+    public year: number,
+    public genre: string,
+    public seasons: number
+  ) {}
 }
 
 export class SeriesSeason {
   constructor(public seasonNumber: number, public episodes: number) {}
 }
 
-export class SeriesCollection extends BasicStreamableCollection<Series> implements Searchable<Series> {
+export class SeriesCollection
+  extends BasicStreamableCollection<Series>
+  implements Searchable<Series>
+{
   constructor(series: Series[]) {
     super(series);
   }
@@ -55,7 +63,9 @@ export class SeriesCollection extends BasicStreamableCollection<Series> implemen
   }
 
   searchByName(name: string): Series[] {
-    return this.items.filter((series) => series.name.toLowerCase().includes(name.toLowerCase()));
+    return this.items.filter((series) =>
+      series.name.toLowerCase().includes(name.toLowerCase())
+    );
   }
   searchByGenre(genre: string): Series[] {
     return this.items.filter((series) => series.genre.includes(genre));
@@ -63,10 +73,18 @@ export class SeriesCollection extends BasicStreamableCollection<Series> implemen
 }
 
 export class Movie {
-  constructor(public title: string, public year: number, public genre: string,public director: string) {}
+  constructor(
+    public title: string,
+    public year: number,
+    public genre: string,
+    public director: string
+  ) {}
 }
 
-export class MovieCollection extends BasicStreamableCollection<Movie> implements Searchable<Movie> {
+export class MovieCollection
+  extends BasicStreamableCollection<Movie>
+  implements Searchable<Movie>
+{
   constructor(movies: Movie[]) {
     super(movies);
   }
@@ -76,19 +94,29 @@ export class MovieCollection extends BasicStreamableCollection<Movie> implements
   }
 
   searchByName(name: string): Movie[] {
-    return this.items.filter((movie) => movie.title.toLowerCase().includes(name.toLowerCase()));
+    return this.items.filter((movie) =>
+      movie.title.toLowerCase().includes(name.toLowerCase())
+    );
   }
-  
+
   searchByGenre(genre: string): Movie[] {
     return this.items.filter((movie) => movie.genre === genre);
   }
 }
 
 export class Documentary {
-  constructor(public title: string, public year: number, public genre: string, public narrator: string) {}
+  constructor(
+    public title: string,
+    public year: number,
+    public genre: string,
+    public narrator: string
+  ) {}
 }
 
-export class DocumentaryCollection extends BasicStreamableCollection<Documentary> implements Searchable<Documentary> {
+export class DocumentaryCollection
+  extends BasicStreamableCollection<Documentary>
+  implements Searchable<Documentary>
+{
   constructor(documentaries: Documentary[]) {
     super(documentaries);
   }
@@ -98,7 +126,9 @@ export class DocumentaryCollection extends BasicStreamableCollection<Documentary
   }
 
   searchByName(name: string): Documentary[] {
-    return this.items.filter((documentary) => documentary.title.toLowerCase().includes(name.toLowerCase()));
+    return this.items.filter((documentary) =>
+      documentary.title.toLowerCase().includes(name.toLowerCase())
+    );
   }
   searchByGenre(genre: string): Documentary[] {
     return this.items.filter((doc) => doc.genre.includes(genre));

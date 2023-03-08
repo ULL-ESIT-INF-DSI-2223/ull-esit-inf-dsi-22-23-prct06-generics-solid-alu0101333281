@@ -10,17 +10,19 @@ interface ISingle extends ICancion {
   versiones?: ICancion[];
 }
 export class Disco<T extends ICancion> implements IDisco<T> {
-    constructor(
-      public nombre: string,
-      public añoPublicacion: number,
-      public canciones: T[],
-      public singles?: ISingle[]
-    ) {
-      this.singles = singles || [];
-    }
+  constructor(
+    public nombre: string,
+    public añoPublicacion: number,
+    public canciones: T[],
+    public singles?: ISingle[]
+  ) {
+    this.singles = singles || [];
   }
+}
 
-export abstract class DiscoSingle<T extends ICancion | ISingle> extends Disco<T> {
+export abstract class DiscoSingle<
+  T extends ICancion | ISingle
+> extends Disco<T> {
   declare singles?: ISingle[];
   constructor(
     nombre: string,
@@ -40,7 +42,9 @@ interface IDisco<T extends ICancion | ISingle> {
   singles?: ISingle[];
 }
 
-export abstract class Artista<T extends ICancion | ISingle> implements IArtista<T> {
+export abstract class Artista<T extends ICancion | ISingle>
+  implements IArtista<T>
+{
   constructor(
     public nombre: string,
     public oyentesMensuales: number,
@@ -144,8 +148,6 @@ export class Single implements ISingle {
   }
   single: boolean;
 }
-
-
 
 interface IArtista<T extends ICancion | ISingle> {
   nombre: string;
