@@ -592,7 +592,7 @@ export class List<T> {
 
 ```
 
-Este es un código TypeScript que define una clase List genérica. Esta clase representa una colección de elementos del tipo T y proporciona una serie de métodos para trabajar con ella.
+Este es un código que define una clase List genérica. Esta clase representa una colección de elementos del tipo T y proporciona una serie de métodos para trabajar con ella.
 
 El constructor de la clase acepta un parámetro opcional elements que es un array de elementos para inicializar la lista. Si no se proporciona ningún parámetro, la lista estará vacía.
 
@@ -702,13 +702,516 @@ Además, ahora deberá hacer que la discografía sea una clase genérica. En alg
 El codigo realizado es:
 
 ```
+/**
+ * Representa una canción.
+ * @interface
+ */
+export interface ICancion {
+    /** Nombre de la canción. */
+    nombre: string;
+    /** Duración de la canción en segundos. */
+    duracion: number;
+    /** Géneros asociados a la canción. */
+    generos: string[];
+    /** Indica si la canción es un single. */
+    single: boolean;
+    /** Número de reproducciones de la canción. */
+    reproducciones: number;
+  }
+  
+  /**
+   * Representa un single, que es una canción con la posibilidad de tener varias versiones.
+   * @interface
+   */
+  export interface ISingle extends ICancion {
+    /** Lista de versiones del single. */
+    versiones?: ICancion[];
+  }
+  
+  /**
+   * Representa un disco, que es un conjunto de canciones y/o singles.
+   * @interface
+   * @template T - Tipo de elementos del disco, que pueden ser canciones o singles.
+   */
+  export interface IDisco<T extends ICancion | ISingle> {
+    /** Nombre del disco. */
+    nombre: string;
+    /** Año de publicación del disco. */
+    añoPublicacion: number;
+    /** Lista de canciones y/o singles en el disco. */
+    canciones: T[];
+    /** Lista de singles en el disco. */
+    singles?: ISingle[];
+  }
+  
+  /**
+   * Representa un artista, que es una persona que crea canciones y/o singles.
+   * @interface
+   * @template T - Tipo de elementos de la discografía del artista, que pueden ser canciones o singles.
+   */
+  export interface IArtista<T extends ICancion | ISingle> {
+    /** Nombre del artista. */
+    nombre: string;
+    /** Número de oyentes mensuales del artista. */
+    oyentesMensuales: number;
+    /** Discografía del artista, que es una lista de discos que contienen canciones y/o singles. */
+    discografia: IDisco<T>[];
+  }
+   /**
+   * Clase que representa un disco que contiene canciones y, opcionalmente, singles.
+   * @implements {IDisco<T>}
+   * @template T El tipo de las canciones del disco.
+   */
+  export class Disco<T extends ICancion> implements IDisco<T> {
+    /**
+     * Crea una instancia de Disco.
+     * @param {string} nombre El nombre del disco.
+     * @param {number} añoPublicacion El año en que se publicó el disco.
+     * @param {T[]} canciones Las canciones del disco.
+     * @param {ISingle[]} [singles] Los singles del disco (opcional).
+     */
+    constructor(
+      public nombre: string,
+      public añoPublicacion: number,
+      public canciones: T[],
+      public singles?: ISingle[]
+    ) {
+      this.singles = singles || [];
+    }
+  }
+  
+  /**
+   * Clase abstracta que representa un disco que contiene canciones y singles.
+   * @extends {Disco<T>}
+   * @template T El tipo de las canciones y singles del disco.
+   */
+  export abstract class DiscoSingle<
+    T extends ICancion | ISingle
+  > extends Disco<T> {
+    /**
+     * Los singles del disco (opcional).
+     */
+    declare singles?: ISingle[];
+    /**
+     * Crea una instancia de DiscoSingle.
+     * @param {string} nombre El nombre del disco.
+     * @param {number} añoPublicacion El año en que se publicó el disco.
+     * @param {T[]} canciones Las canciones y singles del disco.
+     * @param {ISingle[]} [singles] Los singles del disco (opcional).
+     */
+    constructor(
+      nombre: string,
+      añoPublicacion: number,
+      canciones: T[],
+      singles?: ISingle[]
+    ) {
+      super(nombre, añoPublicacion, canciones);
+      this.singles = singles;
+    }
+  }
+  /**
+
+Clase abstracta que representa un artista musical.
+@template T - Tipo de elemento musical que el artista produce (puede ser una canción o un single)
+@implements IArtista
+*/
+export abstract class Artista<T extends ICancion | ISingle> implements IArtista<T> {
+  /**
+  
+  Constructor de la clase Artista.
+  @param nombre - Nombre del artista.
+  @param oyentesMensuales - Número de oyentes mensuales que tiene el artista.
+  @param discografia - Discografía del artista (lista de discos y/o singles que ha producido).
+  */
+  constructor(
+  public nombre: string,
+  public oyentesMensuales: number,
+  public discografia: IDisco<T>[]
+  ) {}
+  /**
+  
+  Método abstracto que devuelve el número de canciones en un disco del artista.
+  @abstract
+  @param discoNombre - Nombre del disco.
+  @returns Número de canciones en el disco.
+  */
+  abstract numCancionesEnDisco(discoNombre: string): number;
+  /**
+  
+  Método abstracto que devuelve la duración total de un disco del artista.
+  @abstract
+  @param discoNombre - Nombre del disco.
+  @returns Duración total del disco en segundos.
+  */
+  abstract duracionDisco(discoNombre: string): number;
+  /**
+  
+  Método abstracto que devuelve el número total de reproducciones de un disco del artista.
+  @abstract
+  @param discoNombre - Nombre del disco.
+  @returns Número total de reproducciones del disco.
+  */
+  abstract reproduccionesDisco(discoNombre: string): number;
+  }
+
+  /**
+Clase que implementa la interfaz IArtista para representar un artista musical.
+@template T - Tipo de elemento musical que el artista produce (puede ser una canción o un single).
+@extends Artista
+*/
+export class ArtistaImpl<T extends ICancion | ISingle> extends Artista<T> {
+    /**
+  Método que devuelve el número de canciones y singles en un disco del artista.
+  @param discoNombre - Nombre del disco.
+  @returns Número de canciones y singles en el disco.
+  @throws {Error} Si el artista no tiene un disco o single con el nombre especificado.
+  */
+  numCancionesEnDisco(discoNombre: string): number {
+    const disco = this.discografia.find((d) => d.nombre === discoNombre);
+    if (disco) {
+      return (
+        disco.canciones.length + (disco.singles ? disco.singles.length : 0)
+      );
+    } else {
+      throw new Error(
+        `El artista ${this.nombre} no tiene un disco o single llamado ${discoNombre}`
+      );
+    }
+  }
+    /**
+  Método que devuelve la duracion de disco.
+  @param discoNombre - Nombre del disco.
+  @returns Número de canciones y singles en el disco.
+  @throws {Error} Si el artista no tiene un disco o single con el nombre especificado.
+  */
+  duracionDisco(discoNombre: string): number {
+    const disco = this.discografia.find((d) => d.nombre === discoNombre);
+    if (disco) {
+      const duracionCanciones = disco.canciones.reduce(
+        (totalDuracion, cancion) => totalDuracion + cancion.duracion,
+        0
+      );
+      const duracionSingles = disco.singles
+        ? disco.singles.reduce((totalDuracion, single) => {
+            const duracionVersiones = single.versiones
+              ? single.versiones.reduce(
+                  (totalDuracion, version) => totalDuracion + version.duracion,
+                  0
+                )
+              : 0;
+            return totalDuracion + single.duracion + duracionVersiones;
+          }, 0)
+        : 0;
+      return duracionCanciones + duracionSingles;
+    } else {
+      throw new Error(
+        `El artista ${this.nombre} no tiene un disco o single llamado ${discoNombre}`
+      );
+    }
+  }
+    /**
+  Método que devuelve el número de reproducciones.
+  @param discoNombre - Nombre del disco.
+  @returns Número de canciones y singles en el disco.
+  @throws {Error} Si el artista no tiene un disco o single con el nombre especificado.
+  */
+  reproduccionesDisco(discoNombre: string): number {
+    const disco = this.discografia.find((d) => d.nombre === discoNombre);
+    if (disco) {
+      const reproduccionesCanciones = disco.canciones.reduce(
+        (totalReproducciones, cancion) =>
+          totalReproducciones + cancion.reproducciones,
+        0
+      );
+      const reproduccionesSingles = disco.singles
+        ? disco.singles.reduce((totalReproducciones, single) => {
+            const reproduccionesVersiones = single.versiones
+              ? single.versiones.reduce(
+                  (totalReproducciones, version) =>
+                    totalReproducciones + version.reproducciones,
+                  0
+                )
+              : 0;
+            return (
+              totalReproducciones +
+              single.reproducciones +
+              reproduccionesVersiones
+            );
+          }, 0)
+        : 0;
+      return reproduccionesCanciones + reproduccionesSingles;
+    } else {
+      throw new Error(
+        `El artista ${this.nombre} no tiene un disco o single llamado ${discoNombre}`
+      );
+    }
+  }
+}
+
+
+/**
+
+Clase que representa un single musical.
+@implements ISingle
+*/
+export class Single implements ISingle {
+  /** 
+Constructor de la clase Single.
+@param nombre - Nombre del single.
+@param duracion - Duración del single en segundos.
+@param generos - Lista de géneros del single.
+@param reproducciones - Número de reproducciones del single.
+@param versiones - Lista de canciones que conforman el single.
+*/
+  constructor(
+    public nombre: string,
+    public duracion: number,
+    public generos: string[],
+    public reproducciones: number,
+    public versiones?: ICancion[]
+  ) {
+    this.versiones = versiones || [];
+  }
+  single: boolean;
+}
+
 
 ```
+
+Este código contiene la definición de varias interfaces y clases que representan elementos de la industria musical, como canciones, singles, discos y artistas.
+
+La interfaz ICancion representa una canción con algunos atributos como el nombre, la duración, los géneros, el número de reproducciones y un indicador booleano que indica si la canción es un single o no.
+
+La interfaz ISingle extiende la interfaz ICancion y agrega la posibilidad de tener varias versiones de un single.
+
+La interfaz IDisco representa un disco, que puede contener canciones y/o singles. Es una interfaz parametrizada con un tipo T que puede ser ICancion o ISingle.
+
+La interfaz IArtista representa un artista que produce canciones y/o singles. Es una interfaz parametrizada con un tipo T que puede ser ICancion o ISingle.
+
+La clase Disco implementa la interfaz IDisco y representa un disco que contiene canciones y, opcionalmente, singles. Esta clase tiene un constructor que recibe el nombre del disco, el año de publicación, una lista de canciones y una lista de singles (opcional).
+
+La clase abstracta DiscoSingle extiende la clase Disco y representa un disco que contiene canciones y singles. Esta clase también tiene un constructor que recibe los mismos parámetros que el constructor de Disco.
+
+La clase abstracta Artista implementa la interfaz IArtista y representa un artista musical. Esta clase tiene un constructor que recibe el nombre del artista, el número de oyentes mensuales y la discografía del artista (una lista de discos y/o singles que ha producido). Además, esta clase tiene tres métodos abstractos que deben ser implementados por las clases que extienden Artista. Estos métodos son numCancionesEnDisco, que devuelve el número de canciones en un disco del artista, duracionDisco, que devuelve la duración total de un disco del artista, y numReproduccionesDisco, que devuelve el número total de reproducciones de un disco del artista.
 
 Los tests son:
 
 ```
+import "mocha";
+import { expect } from "chai";
+import {
+  Single,
+  ArtistaImpl
+} from "../src/ejercicio-3/artista";
+import {
+  Disco
+} from "../src/ejercicio-3/disco";
 
+// Pruebas para la función numCancionesEnDisco de ArtistaImpl
+describe("numCancionesEnDisco", function () {
+    it("debería devolver el número correcto de canciones y singles en un disco existente", function () {
+      const disco = new Disco(
+        "Mi disco",
+        2023,
+        [
+          {
+            nombre: "Canción 1",
+            duracion: 180,
+            generos: ["Rock"],
+            single: false,
+            reproducciones: 100,
+          },
+          {
+            nombre: "Canción 2",
+            duracion: 240,
+            generos: ["Pop"],
+            single: false,
+            reproducciones: 50,
+          },
+        ],
+        [
+          {
+            nombre: "Mi single",
+            duracion: 200,
+            generos: ["Rock"],
+            single: true,
+            reproducciones: 75,
+          },
+        ]
+      );
+      const artista = new ArtistaImpl("Mi artista", 1000, [disco]);
+  
+      const numCanciones = artista.numCancionesEnDisco("Mi disco");
+      expect(numCanciones).to.equal(3);
+    });
+  
+    it("debería lanzar un error si el disco no existe", function () {
+      const artista = new ArtistaImpl("Mi artista", 1000, []);
+  
+      expect(() => artista.numCancionesEnDisco("Disco inexistente")).to.throw(
+        Error
+      );
+    });
+  });
+  
+  // Pruebas para la función duracionDisco de ArtistaImpl
+  describe("duracionDisco", function () {
+    it("debería devolver la duración correcta de un disco existente", function () {
+      const disco = new Disco(
+        "Mi disco",
+        2023,
+        [
+          {
+            nombre: "Canción 1",
+            duracion: 180,
+            generos: ["Rock"],
+            single: false,
+            reproducciones: 100,
+          },
+          {
+            nombre: "Canción 2",
+            duracion: 240,
+            generos: ["Pop"],
+            single: false,
+            reproducciones: 50,
+          },
+        ],
+        [
+          {
+            nombre: "Mi single",
+            duracion: 200,
+            generos: ["Rock"],
+            single: true,
+            reproducciones: 75,
+          },
+        ]
+      );
+      const artista = new ArtistaImpl("Mi artista", 1000, [disco]);
+  
+      const duracion = artista.duracionDisco("Mi disco");
+      expect(duracion).to.equal(620);
+    });
+  
+    it("debería lanzar un error si el disco no existe", function () {
+      const artista = new ArtistaImpl("Mi artista", 1000, []);
+  
+      expect(() => artista.duracionDisco("Disco inexistente")).to.throw(Error);
+    });
+  });
+  
+  // Pruebas para la función reproduccionesDisco de ArtistaImpl
+  describe("reproduccionesDisco", function () {
+    it("debería devolver el número correcto de reproducciones de un disco existente", function () {
+      const disco = new Disco(
+        "Mi disco",
+        2023,
+        [
+          {
+            nombre: "Canción 1",
+            duracion: 180,
+            generos: ["Rock"],
+            single: false,
+            reproducciones: 100,
+          },
+          {
+            nombre: "Canción 2",
+            duracion: 240,
+            generos: ["Pop"],
+            single: false,
+            reproducciones: 50,
+          },
+        ],
+        [
+          {
+            nombre: "Mi single",
+            duracion: 200,
+            generos: ["Rock"],
+            single: true,
+            reproducciones: 75,
+          },
+        ]
+      );
+      const artista = new ArtistaImpl("Mi artista", 1000, [disco]);
+      it("debería devolver el número correcto de reproducciones de un disco existente", function () {
+        const disco = new Disco(
+          "Mi disco",
+          2023,
+          [
+            {
+              nombre: "Canción 1",
+              duracion: 180,
+              generos: ["Rock"],
+              single: false,
+              reproducciones: 100,
+            },
+            {
+              nombre: "Canción 2",
+              duracion: 240,
+              generos: ["Pop"],
+              single: false,
+              reproducciones: 50,
+            },
+          ],
+          [
+            {
+              nombre: "Mi single",
+              duracion: 200,
+              generos: ["Rock"],
+              single: true,
+              reproducciones: 75,
+            },
+          ]
+        );
+        const artista = new ArtistaImpl("Mi artista", 1000, [disco]);
+        const reproducciones = artista.reproduccionesDisco("Mi disco");
+        expect(reproducciones).to.equal(225);
+      });
+  
+      it("debería lanzar un error si el disco no existe", function () {
+        const artista = new ArtistaImpl("Mi artista", 1000, []);
+        expect(() => artista.reproduccionesDisco("Disco inexistente")).to.throw(
+          Error
+        );
+      });
+    });
+  });
+  
+  describe("Single", () => {
+    it("should create a single with versiones", () => {
+      const cancion1 = {
+        nombre: "Cancion 1",
+        duracion: 120,
+        generos: ["pop"],
+        single: false,
+        reproducciones: 500,
+      };
+      const cancion2 = {
+        nombre: "Cancion 2",
+        duracion: 180,
+        generos: ["rock"],
+        single: true,
+        reproducciones: 1000,
+      };
+      const single = new Single("Single 1", 300, ["pop"], 1500, [
+        cancion1,
+        cancion2,
+      ]);
+      expect(single.nombre).to.equal("Single 1");
+      expect(single.duracion).to.equal(300);
+      expect(single.generos).to.deep.equal(["pop"]);
+      expect(single.reproducciones).to.equal(1500);
+      expect(single.versiones).to.deep.equal([cancion1, cancion2]);
+    });
+  
+    it("should create a single without versiones", () => {
+      const single = new Single("Single 2", 240, ["rock"], 800);
+      expect(single.nombre).to.equal("Single 2");
+      expect(single.duracion).to.equal(240);
+      expect(single.generos).to.deep.equal(["rock"]);
+      expect(single.reproducciones).to.equal(800);
+      expect(single.versiones).to.deep.equal([]);
+    });
+  });
 ```
 
 
@@ -717,11 +1220,239 @@ Los tests son:
 El codigo realizado es:
 
 ```
+/**
+
+Represents a Collectable of an item
+*/
+export interface Collectable<T> {
+  addItem(item: T): void;
+  getItem(index: number): T | undefined;
+  removeItem(index: number): T;
+  getNumberOfItems(): number;
+}
+/**
+
+Represents a Searchable of an item
+*/
+export interface Searchable<T> {
+  search(term: T): T[] | undefined;
+}
+import { Collectable, Searchable } from "../ejercicio-mod/ejercicio-mod-interfaces";
+
+/**
+ * Abstract class that implements the Collectable and Searchable interfaces.
+ * It contains an array of items of type T and implements the necessary methods
+ * to add, get, remove and count items, as well as an abstract method for searching
+ * items of type T.
+ */
+abstract class SearchableCollection<T> implements Collectable<T>, Searchable<T> {
+  /**
+   * Array of items of type T.
+   */
+  protected items: T[];
+
+  /**
+   * Creates an instance of SearchableCollection and initializes the items array.
+   */
+  constructor() {
+    this.items = [];
+  }
+
+  /**
+   * Adds an item of type T to the items array.
+   * @param item The item of type T to add.
+   */
+  addItem(item: T): void {
+    this.items.push(item);
+  }
+
+  /**
+   * Gets the item of type T located at the specified index in the items array.
+   * @param index The index of the item to get.
+   * @returns The item of type T located at the specified index or undefined if the index is out of range.
+   */
+  getItem(index: number): T | undefined {
+    if (index >= 0 && index < this.items.length) {
+      return this.items[index];
+    }
+    return undefined;
+  }
+
+  /**
+   * Removes the item of type T located at the specified index in the items array.
+   * @param index The index of the item to remove.
+   * @returns The item of type T that was removed from the array or undefined if the index is out of range.
+   */
+  removeItem(index: number): T {
+    if (index >= 0 && index < this.items.length) {
+      return this.items.splice(index, 1)[0];
+    }
+    return undefined;
+  }
+
+  /**
+   * Gets the number of items of type T in the items array.
+   * @returns The number of items of type T in the items array.
+   */
+  getNumberOfItems(): number {
+    return this.items.length;
+  }
+
+  /**
+   * Abstract method for searching items of type T in the items array.
+   * @param term The search term of type T.
+   * @returns An array of items of type T that match the search term or undefined if no matches were found.
+   */
+  abstract search(term: T): T[] | undefined;
+}
+
+/**
+ * Class that extends the SearchableCollection class and implements the search method for searching
+ * for numbers in the items array.
+ */
+export class NumericSearchableCollection extends SearchableCollection<number> {
+  /**
+   * Searches for numbers in the items array that match the specified search term.
+   * @param term The search term of type number.
+   * @returns An array of numbers that match the search term or undefined if no matches were found.
+   */
+  search(term: number): number[] | undefined {
+    return this.items.filter((item) => item === term);
+  }
+}
+
+/**
+ * Class that extends the SearchableCollection class and implements the search method for searching
+ * for strings in the items array.
+ */
+export class StringSearchableCollection extends SearchableCollection<string> {
+  /**
+   * Searches for strings in the items array that contain the specified search term.
+   * @param term The search term of type string.
+   * @returns An array of strings that contain the search term or undefined if no matches were found.
+   */
+  search(term: string): string[] | undefined {
+    return this.items.filter((item) => item.includes(term));
+  }
+}
 
 ```
+
+Este código define tres interfaces y dos clases en TypeScript. La primera interface Collectable<T> define un conjunto de métodos que deben ser implementados por una clase que represente una colección de elementos de tipo T. La segunda interface Searchable<T> define un método search que debe ser implementado por una clase que permita buscar elementos de tipo T en la colección. Ambas interfaces son implementadas por la clase abstracta SearchableCollection<T> que contiene un arreglo de elementos de tipo T y los métodos necesarios para agregar, obtener, eliminar y contar elementos. Además, la clase abstracta SearchableCollection<T> tiene un método abstracto search que debe ser implementado por las clases que extienden esta clase.
+
+Las dos clases que extienden SearchableCollection<T> son NumericSearchableCollection y StringSearchableCollection. La clase NumericSearchableCollection implementa el método search para buscar números en la colección de números. La clase StringSearchableCollection implementa el método search para buscar cadenas de texto en la colección de cadenas de texto.
+
+En resumen, este código proporciona una estructura básica para crear clases que representen colecciones de elementos de tipo T y permitan buscar elementos en ellas.
 
 Los tests son:
 
 ```
+import "mocha";
+import { expect } from "chai";
+import { NumericSearchableCollection, StringSearchableCollection } from "../src/ejercicio-mod/ejercicio-mod";
+
+// Pruebas para NumericSearchableCollection
+describe('NumericSearchableCollection', () => {
+  let collection: NumericSearchableCollection;
+
+  beforeEach(() => {
+    collection = new NumericSearchableCollection();
+    collection.addItem(10);
+    collection.addItem(20);
+    collection.addItem(30);
+    collection.addItem(10);
+  });
+
+  it('Debe buscar un número existente y devolver un array con todas las ocurrencias', () => {
+    const result = collection.search(10);
+    expect(result).to.have.lengthOf(2);
+    expect(result).to.deep.equal([10, 10]);
+  });
+
+  it('Debe buscar un número inexistente y devolver un array vacío', () => {
+    const result = collection.search(40);
+    expect(result).to.be.empty;
+  });
+  it('Debe remover un item', () => {
+    const result = collection.removeItem(10);
+    expect(result).to.be.eql(undefined);
+  });
+  it('Debe decir el numero de items', () => {
+    const result = collection.getNumberOfItems();
+    expect(result).to.be.eql(4);
+  });
+  it('Debe obtener un item', () => {
+    const result = collection.getItem(2);
+    expect(result).to.be.eql(30);
+  });
+  it('Debe obtener ningun item ya que es negativo', () => {
+    const result = collection.getItem(-1);
+    expect(result).to.be.eql(undefined);
+  });
+  it('Debe remover un item que no existe', () => {
+    const result = collection.removeItem(100);
+    expect(result).to.be.eql(undefined);
+  });
+});
+
+// Pruebas para StringSearchableCollection
+describe('StringSearchableCollection', () => {
+  let collection: StringSearchableCollection;
+
+  beforeEach(() => {
+    collection = new StringSearchableCollection();
+    collection.addItem('hola');
+    collection.addItem('adios');
+    collection.addItem('hello');
+    collection.addItem('hola mundo');
+  });
+
+  it('Debe buscar una subcadena existente y devolver un array con todas las ocurrencias', () => {
+    const result = collection.search('o');
+    expect(result).to.have.lengthOf(4);
+    expect(result).to.deep.equal(['hola', 'adios', 'hello', 'hola mundo']);
+  });
+
+  it('Debe buscar una subcadena inexistente y devolver un array vacío', () => {
+    const result = collection.search('xyz');
+    expect(result).to.be.empty;
+  });
+  it('Debe remover un item', () => {
+    const result = collection.removeItem(1);
+    expect(result).to.be.eql('adios');
+  });
+  it('Debe decir el numero de items', () => {
+    const result = collection.getNumberOfItems();
+    expect(result).to.be.eql(4);
+  });
+  it('Debe obtener un item', () => {
+    const result = collection.getItem(2);
+    expect(result).to.be.eql('hello');
+  });
+  it('Debe obtener un item', () => {
+    const result = collection.getItem(-1);
+    expect(result).to.be.eql(undefined);
+  });
+  it('Debe remover un item', () => {
+    const result = collection.removeItem(10);
+    expect(result).to.be.eql(undefined);
+  });
+});
 
 ```
+
+## Conclusion
+
+Se ha plasmado atraves de este informe todos los conocimientos aprendidos en esta practica sobre clases genericas y principios de SOLID, tanto la destreza como para poder realizar modificaciones del mismo en la hora de entrega. 
+
+
+## Bibliografia
+
+1. https://coveralls.io/
+
+2. https://jfbarrios.com/principios-solid-en-javascript
+
+3. https://www.typescriptlang.org/docs/handbook/2/generics.html
+
+4. https://openai.com/blog/chatgpt
+
