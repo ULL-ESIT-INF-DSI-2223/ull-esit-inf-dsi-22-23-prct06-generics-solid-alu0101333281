@@ -4,20 +4,63 @@ import {
 } from "./interfaces";
 
 
-export abstract class Artista<T extends ICancion | ISingle>
-  implements IArtista<T>
-{
-  constructor(
-    public nombre: string,
-    public oyentesMensuales: number,
-    public discografia: IDisco<T>[]
-  ) {}
-  abstract numCancionesEnDisco(discoNombre: string): number;
-  abstract duracionDisco(discoNombre: string): number;
-  abstract reproduccionesDisco(discoNombre: string): number;
-}
+/**
 
+Clase abstracta que representa un artista musical.
+@template T - Tipo de elemento musical que el artista produce (puede ser una canción o un single)
+@implements IArtista
+*/
+export abstract class Artista<T extends ICancion | ISingle> implements IArtista<T> {
+  /**
+  
+  Constructor de la clase Artista.
+  @param nombre - Nombre del artista.
+  @param oyentesMensuales - Número de oyentes mensuales que tiene el artista.
+  @param discografia - Discografía del artista (lista de discos y/o singles que ha producido).
+  */
+  constructor(
+  public nombre: string,
+  public oyentesMensuales: number,
+  public discografia: IDisco<T>[]
+  ) {}
+  /**
+  
+  Método abstracto que devuelve el número de canciones en un disco del artista.
+  @abstract
+  @param discoNombre - Nombre del disco.
+  @returns Número de canciones en el disco.
+  */
+  abstract numCancionesEnDisco(discoNombre: string): number;
+  /**
+  
+  Método abstracto que devuelve la duración total de un disco del artista.
+  @abstract
+  @param discoNombre - Nombre del disco.
+  @returns Duración total del disco en segundos.
+  */
+  abstract duracionDisco(discoNombre: string): number;
+  /**
+  
+  Método abstracto que devuelve el número total de reproducciones de un disco del artista.
+  @abstract
+  @param discoNombre - Nombre del disco.
+  @returns Número total de reproducciones del disco.
+  */
+  abstract reproduccionesDisco(discoNombre: string): number;
+  }
+
+  /**
+Clase que implementa la interfaz IArtista para representar un artista musical.
+@template T - Tipo de elemento musical que el artista produce (puede ser una canción o un single).
+@extends Artista
+*/
 export class ArtistaImpl<T extends ICancion | ISingle> extends Artista<T> {
+    /**
+  Método que devuelve el número de canciones y singles en un disco del artista.
+  @param discoNombre - Nombre del disco.
+  @returns Número de canciones y singles en el disco.
+  @throws {Error} Si el artista no tiene un disco o single con el nombre especificado.
+  */
   numCancionesEnDisco(discoNombre: string): number {
     const disco = this.discografia.find((d) => d.nombre === discoNombre);
     if (disco) {
@@ -30,7 +73,12 @@ export class ArtistaImpl<T extends ICancion | ISingle> extends Artista<T> {
       );
     }
   }
-
+    /**
+  Método que devuelve la duracion de disco.
+  @param discoNombre - Nombre del disco.
+  @returns Número de canciones y singles en el disco.
+  @throws {Error} Si el artista no tiene un disco o single con el nombre especificado.
+  */
   duracionDisco(discoNombre: string): number {
     const disco = this.discografia.find((d) => d.nombre === discoNombre);
     if (disco) {
@@ -56,7 +104,12 @@ export class ArtistaImpl<T extends ICancion | ISingle> extends Artista<T> {
       );
     }
   }
-
+    /**
+  Método que devuelve el número de reproducciones.
+  @param discoNombre - Nombre del disco.
+  @returns Número de canciones y singles en el disco.
+  @throws {Error} Si el artista no tiene un disco o single con el nombre especificado.
+  */
   reproduccionesDisco(discoNombre: string): number {
     const disco = this.discografia.find((d) => d.nombre === discoNombre);
     if (disco) {
@@ -91,8 +144,20 @@ export class ArtistaImpl<T extends ICancion | ISingle> extends Artista<T> {
 }
 
 
+/**
 
+Clase que representa un single musical.
+@implements ISingle
+*/
 export class Single implements ISingle {
+  /** 
+Constructor de la clase Single.
+@param nombre - Nombre del single.
+@param duracion - Duración del single en segundos.
+@param generos - Lista de géneros del single.
+@param reproducciones - Número de reproducciones del single.
+@param versiones - Lista de canciones que conforman el single.
+*/
   constructor(
     public nombre: string,
     public duracion: number,
