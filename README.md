@@ -1441,6 +1441,10 @@ describe('StringSearchableCollection', () => {
 
 ```
 
+### Coveralls
+
+[![Coverage Status](https://coveralls.io/repos/github/ULL-ESIT-INF-DSI-2223/ull-esit-inf-dsi-22-23-prct06-generics-solid-alu0101333281/badge.svg?branch=src)](https://coveralls.io/github/ULL-ESIT-INF-DSI-2223/ull-esit-inf-dsi-22-23-prct06-generics-solid-alu0101333281?branch=src)
+
 ## Conclusion
 
 Se ha plasmado atraves de este informe todos los conocimientos aprendidos en esta practica sobre clases genericas y principios de SOLID, tanto la destreza como para poder realizar modificaciones del mismo en la hora de entrega. 
