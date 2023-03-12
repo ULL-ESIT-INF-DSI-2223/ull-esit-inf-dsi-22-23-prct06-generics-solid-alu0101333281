@@ -1,46 +1,8 @@
-interface ICancion {
-  nombre: string;
-  duracion: number;
-  generos: string[];
-  single: boolean;
-  reproducciones: number;
-}
 
-interface ISingle extends ICancion {
-  versiones?: ICancion[];
-}
-export class Disco<T extends ICancion> implements IDisco<T> {
-  constructor(
-    public nombre: string,
-    public añoPublicacion: number,
-    public canciones: T[],
-    public singles?: ISingle[]
-  ) {
-    this.singles = singles || [];
-  }
-}
+import {
+  ICancion, ISingle, IDisco, IArtista
+} from "./interfaces";
 
-export abstract class DiscoSingle<
-  T extends ICancion | ISingle
-> extends Disco<T> {
-  declare singles?: ISingle[];
-  constructor(
-    nombre: string,
-    añoPublicacion: number,
-    canciones: T[],
-    singles?: ISingle[]
-  ) {
-    super(nombre, añoPublicacion, canciones);
-    this.singles = singles;
-  }
-}
-
-interface IDisco<T extends ICancion | ISingle> {
-  nombre: string;
-  añoPublicacion: number;
-  canciones: T[];
-  singles?: ISingle[];
-}
 
 export abstract class Artista<T extends ICancion | ISingle>
   implements IArtista<T>
@@ -128,13 +90,7 @@ export class ArtistaImpl<T extends ICancion | ISingle> extends Artista<T> {
   }
 }
 
-interface ISingle {
-  nombre: string;
-  duracion: number;
-  generos: string[];
-  reproducciones: number;
-  versiones?: ICancion[];
-}
+
 
 export class Single implements ISingle {
   constructor(
@@ -149,8 +105,3 @@ export class Single implements ISingle {
   single: boolean;
 }
 
-interface IArtista<T extends ICancion | ISingle> {
-  nombre: string;
-  oyentesMensuales: number;
-  discografia: IDisco<T>[];
-}
