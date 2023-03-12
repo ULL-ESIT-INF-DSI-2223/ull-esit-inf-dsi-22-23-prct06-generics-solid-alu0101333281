@@ -1,8 +1,4 @@
-
-import {
-  ICancion, ISingle, IDisco, IArtista
-} from "./interfaces";
-
+import { ICancion, ISingle, IDisco, IArtista } from "./interfaces";
 
 /**
 
@@ -10,7 +6,9 @@ Clase abstracta que representa un artista musical.
 @template T - Tipo de elemento musical que el artista produce (puede ser una canción o un single)
 @implements IArtista
 */
-export abstract class Artista<T extends ICancion | ISingle> implements IArtista<T> {
+export abstract class Artista<T extends ICancion | ISingle>
+  implements IArtista<T>
+{
   /**
   
   Constructor de la clase Artista.
@@ -19,9 +17,9 @@ export abstract class Artista<T extends ICancion | ISingle> implements IArtista<
   @param discografia - Discografía del artista (lista de discos y/o singles que ha producido).
   */
   constructor(
-  public nombre: string,
-  public oyentesMensuales: number,
-  public discografia: IDisco<T>[]
+    public nombre: string,
+    public oyentesMensuales: number,
+    public discografia: IDisco<T>[]
   ) {}
   /**
   
@@ -47,15 +45,15 @@ export abstract class Artista<T extends ICancion | ISingle> implements IArtista<
   @returns Número total de reproducciones del disco.
   */
   abstract reproduccionesDisco(discoNombre: string): number;
-  }
+}
 
-  /**
+/**
 Clase que implementa la interfaz IArtista para representar un artista musical.
 @template T - Tipo de elemento musical que el artista produce (puede ser una canción o un single).
 @extends Artista
 */
 export class ArtistaImpl<T extends ICancion | ISingle> extends Artista<T> {
-    /**
+  /**
   Método que devuelve el número de canciones y singles en un disco del artista.
   @param discoNombre - Nombre del disco.
   @returns Número de canciones y singles en el disco.
@@ -73,7 +71,7 @@ export class ArtistaImpl<T extends ICancion | ISingle> extends Artista<T> {
       );
     }
   }
-    /**
+  /**
   Método que devuelve la duracion de disco.
   @param discoNombre - Nombre del disco.
   @returns Número de canciones y singles en el disco.
@@ -104,7 +102,7 @@ export class ArtistaImpl<T extends ICancion | ISingle> extends Artista<T> {
       );
     }
   }
-    /**
+  /**
   Método que devuelve el número de reproducciones.
   @param discoNombre - Nombre del disco.
   @returns Número de canciones y singles en el disco.
@@ -143,7 +141,6 @@ export class ArtistaImpl<T extends ICancion | ISingle> extends Artista<T> {
   }
 }
 
-
 /**
 
 Clase que representa un single musical.
@@ -169,4 +166,3 @@ Constructor de la clase Single.
   }
   single: boolean;
 }
-

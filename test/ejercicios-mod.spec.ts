@@ -1,9 +1,12 @@
 import "mocha";
 import { expect } from "chai";
-import { NumericSearchableCollection, StringSearchableCollection } from "../src/ejercicio-mod/ejercicio-mod";
+import {
+  NumericSearchableCollection,
+  StringSearchableCollection,
+} from "../src/ejercicio-mod/ejercicio-mod";
 
 // Pruebas para NumericSearchableCollection
-describe('NumericSearchableCollection', () => {
+describe("NumericSearchableCollection", () => {
   let collection: NumericSearchableCollection;
 
   beforeEach(() => {
@@ -14,77 +17,77 @@ describe('NumericSearchableCollection', () => {
     collection.addItem(10);
   });
 
-  it('Debe buscar un número existente y devolver un array con todas las ocurrencias', () => {
+  it("Debe buscar un número existente y devolver un array con todas las ocurrencias", () => {
     const result = collection.search(10);
     expect(result).to.have.lengthOf(2);
     expect(result).to.deep.equal([10, 10]);
   });
 
-  it('Debe buscar un número inexistente y devolver un array vacío', () => {
+  it("Debe buscar un número inexistente y devolver un array vacío", () => {
     const result = collection.search(40);
     expect(result).to.be.empty;
   });
-  it('Debe remover un item', () => {
+  it("Debe remover un item", () => {
     const result = collection.removeItem(10);
     expect(result).to.be.eql(undefined);
   });
-  it('Debe decir el numero de items', () => {
+  it("Debe decir el numero de items", () => {
     const result = collection.getNumberOfItems();
     expect(result).to.be.eql(4);
   });
-  it('Debe obtener un item', () => {
+  it("Debe obtener un item", () => {
     const result = collection.getItem(2);
     expect(result).to.be.eql(30);
   });
-  it('Debe obtener ningun item ya que es negativo', () => {
+  it("Debe obtener ningun item ya que es negativo", () => {
     const result = collection.getItem(-1);
     expect(result).to.be.eql(undefined);
   });
-  it('Debe remover un item que no existe', () => {
+  it("Debe remover un item que no existe", () => {
     const result = collection.removeItem(100);
     expect(result).to.be.eql(undefined);
   });
 });
 
 // Pruebas para StringSearchableCollection
-describe('StringSearchableCollection', () => {
+describe("StringSearchableCollection", () => {
   let collection: StringSearchableCollection;
 
   beforeEach(() => {
     collection = new StringSearchableCollection();
-    collection.addItem('hola');
-    collection.addItem('adios');
-    collection.addItem('hello');
-    collection.addItem('hola mundo');
+    collection.addItem("hola");
+    collection.addItem("adios");
+    collection.addItem("hello");
+    collection.addItem("hola mundo");
   });
 
-  it('Debe buscar una subcadena existente y devolver un array con todas las ocurrencias', () => {
-    const result = collection.search('o');
+  it("Debe buscar una subcadena existente y devolver un array con todas las ocurrencias", () => {
+    const result = collection.search("o");
     expect(result).to.have.lengthOf(4);
-    expect(result).to.deep.equal(['hola', 'adios', 'hello', 'hola mundo']);
+    expect(result).to.deep.equal(["hola", "adios", "hello", "hola mundo"]);
   });
 
-  it('Debe buscar una subcadena inexistente y devolver un array vacío', () => {
-    const result = collection.search('xyz');
+  it("Debe buscar una subcadena inexistente y devolver un array vacío", () => {
+    const result = collection.search("xyz");
     expect(result).to.be.empty;
   });
-  it('Debe remover un item', () => {
+  it("Debe remover un item", () => {
     const result = collection.removeItem(1);
-    expect(result).to.be.eql('adios');
+    expect(result).to.be.eql("adios");
   });
-  it('Debe decir el numero de items', () => {
+  it("Debe decir el numero de items", () => {
     const result = collection.getNumberOfItems();
     expect(result).to.be.eql(4);
   });
-  it('Debe obtener un item', () => {
+  it("Debe obtener un item", () => {
     const result = collection.getItem(2);
-    expect(result).to.be.eql('hello');
+    expect(result).to.be.eql("hello");
   });
-  it('Debe obtener un item', () => {
+  it("Debe obtener un item", () => {
     const result = collection.getItem(-1);
     expect(result).to.be.eql(undefined);
   });
-  it('Debe remover un item', () => {
+  it("Debe remover un item", () => {
     const result = collection.removeItem(10);
     expect(result).to.be.eql(undefined);
   });

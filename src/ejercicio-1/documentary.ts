@@ -18,8 +18,10 @@ export class Documentary {
  * Una colección de documentales que extiende la clase `BasicStreamableCollection`
  * y también implementa la interfaz `Searchable` para buscar documentales en la colección.
  */
-export class DocumentaryCollection extends BasicStreamableCollection<Documentary> implements Searchable<Documentary> {
-
+export class DocumentaryCollection
+  extends BasicStreamableCollection<Documentary>
+  implements Searchable<Documentary>
+{
   /**
    * Crea una nueva instancia de `DocumentaryCollection`.
    *
@@ -63,4 +65,3 @@ export class DocumentaryCollection extends BasicStreamableCollection<Documentary
     return this.items.filter((doc) => doc.genre.includes(genre));
   }
 }
-

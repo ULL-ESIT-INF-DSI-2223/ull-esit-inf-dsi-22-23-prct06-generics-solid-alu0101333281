@@ -1,4 +1,7 @@
-import { Collectable, Searchable } from "../ejercicio-mod/ejercicio-mod-interfaces";
+import {
+  Collectable,
+  Searchable,
+} from "../ejercicio-mod/ejercicio-mod-interfaces";
 
 /**
  * Abstract class that implements the Collectable and Searchable interfaces.
@@ -6,7 +9,9 @@ import { Collectable, Searchable } from "../ejercicio-mod/ejercicio-mod-interfac
  * to add, get, remove and count items, as well as an abstract method for searching
  * items of type T.
  */
-abstract class SearchableCollection<T> implements Collectable<T>, Searchable<T> {
+abstract class SearchableCollection<T>
+  implements Collectable<T>, Searchable<T>
+{
   /**
    * Array of items of type T.
    */
