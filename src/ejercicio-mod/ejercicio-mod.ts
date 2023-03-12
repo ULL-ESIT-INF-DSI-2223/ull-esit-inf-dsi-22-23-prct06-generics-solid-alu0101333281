@@ -1,4 +1,4 @@
-import { Collectable, Searchable } from "../src/ejercicio-mod-interfaces";
+import { Collectable, Searchable } from "../ejercicio-mod/ejercicio-mod-interfaces";
 
 /**
  * Abstract class that implements the Collectable and Searchable interfaces.

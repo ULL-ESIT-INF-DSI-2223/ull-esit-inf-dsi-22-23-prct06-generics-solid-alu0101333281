@@ -1,6 +1,6 @@
 import "mocha";
 import { expect } from "chai";
-import { NumericSearchableCollection, StringSearchableCollection } from "../src/ejercicio-mod";
+import { NumericSearchableCollection, StringSearchableCollection } from "../src/ejercicio-mod/ejercicio-mod";
 
 // Pruebas para NumericSearchableCollection
 describe('NumericSearchableCollection', () => {
